@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  /* --- Color tokens --- */
+  --color-ink: #12211d;        /* near-black forest-teal, primary dark bg */
+  --color-ink-soft: #1b322c;   /* slightly lighter panels on dark bg */
+  --color-paper: #efe9dc;      /* warm bone, primary light bg */
+  --color-paper-soft: #e5ddca; /* subtle contrast on light bg */
+  --color-gold: #e3a527;       /* marigold accent - primary CTA */
+  --color-teal: #1f6f64;       /* secondary accent */
+  --color-rust: #b3472b;       /* sparing emphasis / alerts */
+
+  /* --- Fonts --- */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Inter", "Noto Sans Arabic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-arabic: "Noto Sans Arabic", "Inter", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+[dir="rtl"] body,
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+::selection {
+  background-color: var(--color-gold);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* Signature relay ticker: one phrase cycling through all 5 languages */
+@keyframes relay-cycle {
+  0%, 16% { opacity: 1; transform: translateY(0); }
+  20%, 100% { opacity: 0; transform: translateY(-0.4em); }
+}
+
+.relay-word {
+  animation: relay-cycle 6s infinite;
+}
+.relay-word:nth-child(1) { animation-delay: 0s; }
+.relay-word:nth-child(2) { animation-delay: 1.2s; }
+.relay-word:nth-child(3) { animation-delay: 2.4s; }
+.relay-word:nth-child(4) { animation-delay: 3.6s; }
+.relay-word:nth-child(5) { animation-delay: 4.8s; }
+
+.text-balance {
+  text-wrap: balance;
+}
