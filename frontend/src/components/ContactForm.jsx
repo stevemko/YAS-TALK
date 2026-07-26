@@ -1,100 +1,138 @@
+// src/components/Contact.jsx
 import { useState } from 'react';
-import { useLanguage } from '../context/LanguageContext';
-import { submitContactMessage } from '../api/client';
 
-const initialForm = { name: '', email: '', message: '' };
+export default function Contact() {
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-export default function ContactForm() {
-  const { t } = useLanguage();
-  const [form, setForm] = useState(initialForm);
-  const [status, setStatus] = useState('idle');
-  const [errors, setErrors] = useState({});
-
-  function update(field) {
-    return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
-  }
-
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('loading');
-    setErrors({});
+    setLoading(true);
+
+    const formData = new FormData(e.target);
+    // Replace YOUR_ACCESS_KEY_HERE with your free key from web3forms.com
+    formData.append("access_key", "YOUR_ACCESS_KEY_HERE"); 
+
     try {
-      await submitContactMessage(form);
-      setStatus('success');
-      setForm(initialForm);
-    } catch (err) {
-      setStatus('error');
-      setErrors(err?.response?.data || {});
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSubmitted(true);
+        setLoading(false);
+      } else {
+        alert("Something went wrong. Please try again.");
+        setLoading(false);
+      }
+    } catch (error) {
+      alert("Error sending message.");
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <section id="contact" className="bg-ink px-5 py-20 text-paper sm:px-8 sm:py-28">
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.8fr_1fr]">
-        <div>
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-gold">
-            {t.contact.eyebrow}
+    <section id="contact" className="py-24 px-6 max-w-7xl mx-auto">
+      <div className="bg-[#0b1714] border border-white/10 rounded-3xl p-8 sm:p-16 shadow-2xl grid lg:grid-cols-12 gap-12 items-center relative overflow-hidden">
+        
+        {/* Background glow accent */}
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        {/* Left Column: Heading & Value Add info */}
+        <div className="lg:col-span-5 space-y-6 relative z-10">
+          <span className="text-xs font-bold text-gold uppercase tracking-widest bg-gold/10 px-3.5 py-1.5 rounded-full border border-gold/20">
+            Get In Touch
           </span>
-          <h2 className="mt-4 text-balance font-display text-3xl font-semibold sm:text-4xl">
-            {t.contact.title}
+          
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+            Questions, ideas, or want to build with us?
           </h2>
+          
+          <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-light">
+            Whether you are a developer, potential partner, educator, or early user, we’d love to hear from you. Drop us a message and our team will get back to you shortly.
+          </p>
+
+          <div className="space-y-4 pt-4 border-t border-white/10 text-sm text-gray-300">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gold border border-white/10 font-bold">✉</span>
+              <span>Yastalk@gmail.com</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gold border border-white/10 font-bold">🌍</span>
+              <span>Connecting Global Communities</span>
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="name" className="mb-1.5 block text-sm text-paper/70">
-              {t.contact.name}
-            </label>
-            <input
-              id="name"
-              required
-              value={form.name}
-              onChange={update('name')}
-              className="w-full rounded-xl border border-paper/20 bg-ink-soft px-4 py-3 text-paper outline-none focus:border-gold"
-            />
-            {errors.name && <p className="mt-1 text-xs text-rust">{errors.name[0]}</p>}
-          </div>
+        {/* Right Column: Styled Form or Success State */}
+        <div className="lg:col-span-7 bg-white/5 backdrop-blur-md border border-white/10 p-6 sm:p-8 rounded-2xl relative z-10 shadow-xl">
+          {submitted ? (
+            <div className="text-center py-12 space-y-4">
+              <div className="w-16 h-16 bg-gold/20 border border-gold/40 text-gold rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
+              <h3 className="font-display text-2xl font-bold text-white">Message Sent Successfully!</h3>
+              <p className="text-gray-300 text-sm max-w-md mx-auto">
+                Thank you for reaching out. Your message has been forwarded directly to <span className="text-gold font-medium">Yastalk@gmail.com</span>. We will respond soon!
+              </p>
+              <button 
+                onClick={() => setSubmitted(false)}
+                className="mt-4 text-xs font-semibold uppercase tracking-wider text-gold hover:underline"
+              >
+                Send another message
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gold mb-2">
+                  Your name
+                </label>
+                <input 
+                  type="text" 
+                  name="name"
+                  required
+                  placeholder="e.g. Sarah Jenkins"
+                  className="w-full bg-[#12211d] border border-white/15 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold transition-colors"
+                />
+              </div>
 
-          <div>
-            <label htmlFor="email" className="mb-1.5 block text-sm text-paper/70">
-              {t.contact.email}
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={form.email}
-              onChange={update('email')}
-              className="w-full rounded-xl border border-paper/20 bg-ink-soft px-4 py-3 text-paper outline-none focus:border-gold"
-            />
-            {errors.email && <p className="mt-1 text-xs text-rust">{errors.email[0]}</p>}
-          </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gold mb-2">
+                  Your email
+                </label>
+                <input 
+                  type="email" 
+                  name="email"
+                  required
+                  placeholder="sarah@example.com"
+                  className="w-full bg-[#12211d] border border-white/15 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold transition-colors"
+                />
+              </div>
 
-          <div>
-            <label htmlFor="message" className="mb-1.5 block text-sm text-paper/70">
-              {t.contact.message}
-            </label>
-            <textarea
-              id="message"
-              required
-              rows={4}
-              value={form.message}
-              onChange={update('message')}
-              className="w-full rounded-xl border border-paper/20 bg-ink-soft px-4 py-3 text-paper outline-none focus:border-gold"
-            />
-            {errors.message && <p className="mt-1 text-xs text-rust">{errors.message[0]}</p>}
-          </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gold mb-2">
+                  Your message
+                </label>
+                <textarea 
+                  name="message"
+                  required
+                  rows="4" 
+                  placeholder="Tell us what's on your mind or how you'd like to collaborate..."
+                  className="w-full bg-[#12211d] border border-white/15 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold transition-colors resize-none"
+                ></textarea>
+              </div>
 
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="mt-2 self-start rounded-full bg-gold px-6 py-3 text-sm font-semibold text-ink transition-transform hover:scale-105 disabled:opacity-60"
-          >
-            {status === 'loading' ? '…' : t.contact.button}
-          </button>
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full bg-gold hover:bg-[#d49622] text-[#12211d] font-bold py-4 rounded-xl transition-all shadow-lg shadow-gold/20 hover:scale-[1.01] text-sm uppercase tracking-wider disabled:opacity-50"
+              >
+                {loading ? "Sending..." : "Send message"}
+              </button>
+            </form>
+          )}
+        </div>
 
-          {status === 'success' && <p className="text-sm text-gold">{t.contact.success}</p>}
-        </form>
       </div>
     </section>
   );

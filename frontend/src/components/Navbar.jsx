@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
+import logo from '../assets/yastalk-logo.png'; // <-- Added logo import
 
 // Anchor sections live on the home page; "app" is its own route.
 const SECTIONS = [
@@ -43,7 +44,9 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link to="/" className="flex items-center gap-2">
+        {/* Updated Brand / Logo Link */}
+        <Link to="/" className="flex items-center gap-3">
+          <img src={logo} alt="Yas Talk Logo" className="h-9 w-auto object-contain" />
           <span className="font-display text-2xl font-semibold text-paper">Yas<span className="text-gold">Talk</span></span>
         </Link>
 

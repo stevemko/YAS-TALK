@@ -1,7 +1,7 @@
 import Hero from '../components/Hero';
 import Services from '../components/Services';
 import Languages from '../components/Languages';
-import About from '../components/About';
+import Team from '../components/Team';
 import Testimonials from '../components/Testimonials';
 import CtaWaitlist from '../components/CtaWaitlist';
 import ContactForm from '../components/ContactForm';
@@ -12,7 +12,7 @@ export default function HomePage({ data }) {
       <Hero />
       <Services services={data.services} />
       <Languages languages={data.languages} />
-      <About />
+      <Team />
       <Testimonials testimonials={data.testimonials} />
       <CtaWaitlist />
       <ContactForm />
