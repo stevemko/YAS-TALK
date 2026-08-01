@@ -6,6 +6,7 @@ import ceoImg from '../images/ceo.jpg';
 import yasImg from '../images/yas.jpg';
 import coryImg from '../images/cory.jpg';
 import steveImg from '../images/steve.jpg';
+import mhmedImg from '../images/mhmed.jpg';
 
 const teamMembers = [
   {
@@ -54,6 +55,16 @@ const teamMembers = [
     ],
     image: steveImg,
   },
+  {
+    name: "Mhmed Mwangi",
+    role: "Community Manager (Kenya)",
+    shortBio: "Dedicated community manager with a passion for fostering inclusive and engaging online spaces...",
+    fullBio: [
+      "Mhmed Mwangi is a dedicated community manager with a passion for fostering inclusive and engaging online spaces. He works to build and maintain strong relationships with users, ensuring their voices are heard and valued.",
+      "With a background in communications and social media strategy, Mhmed helps shape the narrative around YasTalk, promoting its mission and values within the communities it serves."
+    ],
+    image: mhmedImg,
+  }
 ];
 
 export default function Team() {
