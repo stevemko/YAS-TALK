@@ -56,12 +56,11 @@ const teamMembers = [
     image: steveImg,
   },
   {
-    name: "Mhmed Mwangi",
+    name: "Mohamad F. Arabi",
     role: "Community Manager (Kenya)",
-    shortBio: "Dedicated community manager with a passion for fostering inclusive and engaging online spaces...",
+    shortBio: "Board Member, Management Consultant, and Business Development Advisor with extensive cross-sector experience...",
     fullBio: [
-      "Mhmed Mwangi is a dedicated community manager with a passion for fostering inclusive and engaging online spaces. He works to build and maintain strong relationships with users, ensuring their voices are heard and valued.",
-      "With a background in communications and social media strategy, Mhmed helps shape the narrative around YasTalk, promoting its mission and values within the communities it serves."
+      "Mohamad F. Arabi is a Board Member, Management Consultant, and Business Development Advisor with extensive cross-sector experience across Lebanon, the United States, Canada, UK, and Africa. He brings a strategic approach to governance, organizational development, and stakeholder engagement, with a proven ability to translate strategy into sustainable, results-driven outcomes."
     ],
     image: mhmedImg,
   }
