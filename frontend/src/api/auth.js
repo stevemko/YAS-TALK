@@ -1,39 +1,23 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { api } from './client';
 
-export async function register(data) {
-  const res = await fetch(`${API_BASE}/auth/register/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  const json = await res.json();
-  if (!res.ok) throw json;
-  return json;
-}
+// skipAuth: these calls never send a login token.
+const open = { skipAuth: true };
 
-export async function login(email, password) {
-  const res = await fetch(`${API_BASE}/auth/login/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-  const json = await res.json();
-  if (!res.ok) throw json;
-  return json;
-}
+export const register = (data) =>
+  api.post('/auth/register/', data, open).then((r) => r.data);
 
-export async function logout(refresh) {
-  await fetch(`${API_BASE}/auth/logout/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh }),
-  });
-}
+export const login = (email, password) =>
+  api.post('/auth/login/', { email, password }, open).then((r) => r.data);
 
-export async function getMe(accessToken) {
-  const res = await fetch(`${API_BASE}/auth/me/`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  if (!res.ok) throw new Error('Not authenticated');
-  return res.json();
-}
+export const logout = (refresh) =>
+  api.post('/auth/logout/', { refresh }, open).then(() => undefined);
+
+export const getMe = () => api.get('/auth/me/').then((r) => r.data);
+
+export const requestPasswordReset = (email) =>
+  api.post('/auth/password-reset/', { email }, open).then((r) => r.data);
+
+export const confirmPasswordReset = ({ uid, token, password }) =>
+  api
+    .post('/auth/password-reset/confirm/', { uid, token, password }, open)
+    .then((r) => r.data);

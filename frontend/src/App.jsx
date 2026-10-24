@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 
 import { LanguageProvider } from './context/LanguageContext';
-import { AuthProvider } from './context/AuthContext';          // ← added
+import { AuthProvider } from './context/AuthContext';
 import { fetchSiteMeta } from './api/client';
 
 import {
@@ -13,12 +13,14 @@ import {
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ProtectedRoute from './components/ProtectedRoute';     // ← added (optional but recommended)
+import ProtectedRoute from './components/ProtectedRoute';
 
 import HomePage from './pages/HomePage';
 import AppShowcase from './pages/AppShowcase';
 import Login from './pages/Login';
-import Signup from './pages/Signup';                          // ← added
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function ScrollToHash() {
   const { pathname, hash } = useLocation();
@@ -61,17 +63,9 @@ function SiteContent() {
         if (cancelled) return;
 
         setData({
-          languages: meta.languages?.length
-            ? meta.languages
-            : fallbackLanguages,
-
-          services: meta.services?.length
-            ? meta.services
-            : fallbackServices,
-
-          testimonials: meta.testimonials?.length
-            ? meta.testimonials
-            : fallbackTestimonials,
+          languages: meta.languages?.length ? meta.languages : fallbackLanguages,
+          services: meta.services?.length ? meta.services : fallbackServices,
+          testimonials: meta.testimonials?.length ? meta.testimonials : fallbackTestimonials,
         });
       })
       .catch(() => {});
@@ -89,30 +83,23 @@ function SiteContent() {
 
       <main>
         <Routes>
-          <Route
-            path="/"
-            element={<HomePage data={data} />}
-          />
+          <Route path="/" element={<HomePage data={data} />} />
 
-          {/* Protected route - only logged-in users can see /app */}
+          {/* Only logged-in visitors can open /app. Guests are sent to log in,
+              then returned here. Remove ProtectedRoute to make it public. */}
           <Route
             path="/app"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute reason="Log in or create an account to open the app.">
                 <AppShowcase />
               </ProtectedRoute>
             }
           />
 
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-
-          <Route
-            path="/signup"
-            element={<Signup />}
-          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </main>
 
@@ -125,7 +112,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <LanguageProvider>
-        <AuthProvider>               {/* ← AuthProvider wraps everything */}
+        <AuthProvider>
           <SiteContent />
         </AuthProvider>
       </LanguageProvider>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import logo from '../assets/yastalk-logo.png'; // <-- Added logo import
+import logo from '../assets/yastalk-logo.png';
 
 // Anchor sections live on the home page; "app" is its own route.
 const SECTIONS = [
@@ -13,12 +14,80 @@ const SECTIONS = [
   { id: 'contact', key: 'contact' },
 ];
 
+function displayName(user) {
+  return [user.first_name, user.last_name].filter(Boolean).join(' ') || user.email;
+}
+
+function AccountMenu({ user, logoutLabel, onLogout }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onPointerDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open]);
+
+  const initial = (user.first_name || user.email || '?').charAt(0).toUpperCase();
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="true"
+        aria-expanded={open}
+        aria-label="Account menu"
+        className="grid h-9 w-9 place-items-center rounded-full bg-gold text-sm font-semibold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
+      >
+        {initial}
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-3 w-64 rounded-2xl bg-paper p-2 text-ink shadow-xl shadow-black/20">
+          <div className="px-3 py-2">
+            <p className="truncate font-medium">{displayName(user)}</p>
+            <p className="truncate text-sm text-ink/60">{user.email}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              onLogout();
+            }}
+            className="w-full rounded-xl px-3 py-2 text-left text-sm font-medium hover:bg-ink/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+          >
+            {logoutLabel}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Navbar() {
   const { t } = useLanguage();
+  const { user, isAuthenticated, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const loginLabel = t.nav.login || 'Log in';
+  const signupLabel = t.nav.signup || 'Create account';
+  const logoutLabel = t.nav.logout || 'Log out';
+
+  // After logging in, visitors come back to the page they were on.
+  const here = { pathname: location.pathname, search: location.search, hash: location.hash };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -37,6 +106,12 @@ export default function Navbar() {
     };
   }
 
+  async function handleLogout() {
+    setMenuOpen(false);
+    await logout();
+    navigate('/');
+  }
+
   return (
     <header
       className={`sticky top-0 z-40 transition-colors ${
@@ -44,10 +119,11 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        {/* Updated Brand / Logo Link */}
         <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="Yas Talk Logo" className="h-9 w-auto object-contain" />
-          <span className="font-display text-2xl font-semibold text-paper">Yas<span className="text-gold">Talk</span></span>
+          <span className="font-display text-2xl font-semibold text-paper">
+            Yas<span className="text-gold">Talk</span>
+          </span>
         </Link>
 
         <ul className="hidden items-center gap-7 lg:flex">
@@ -78,6 +154,19 @@ export default function Navbar() {
           <div className="hidden sm:block">
             <LanguageSwitcher variant="dark" />
           </div>
+
+          {isAuthenticated ? (
+            <AccountMenu user={user} logoutLabel={logoutLabel} onLogout={handleLogout} />
+          ) : (
+            <Link
+              to="/login"
+              state={{ from: here }}
+              className="hidden text-sm font-medium text-paper/80 transition-colors hover:text-gold sm:inline-block"
+            >
+              {loginLabel}
+            </Link>
+          )}
+
           <a
             href="/#cta"
             onClick={goToSection('cta')}
@@ -123,6 +212,41 @@ export default function Navbar() {
               </Link>
             </li>
           </ul>
+
+          <div className="mt-3 border-t border-paper/10 pt-3">
+            {isAuthenticated ? (
+              <>
+                <p className="truncate px-3 text-sm text-paper/60">{displayName(user)}</p>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="mt-1 block w-full rounded-lg px-3 py-2.5 text-left text-paper/90 hover:bg-paper/5"
+                >
+                  {logoutLabel}
+                </button>
+              </>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <Link
+                  to="/login"
+                  state={{ from: here }}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-lg px-3 py-2.5 text-paper/90 hover:bg-paper/5"
+                >
+                  {loginLabel}
+                </Link>
+                <Link
+                  to="/signup"
+                  state={{ from: here }}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-lg px-3 py-2.5 text-paper/90 hover:bg-paper/5"
+                >
+                  {signupLabel}
+                </Link>
+              </div>
+            )}
+          </div>
+
           <div className="mt-3 flex items-center justify-between gap-3">
             <LanguageSwitcher variant="dark" />
             <a

@@ -1,138 +1,171 @@
-// src/components/Contact.jsx
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { submitContactMessage, parseApiError } from '../api/client';
+import { useAuth } from '../context/AuthContext';
+
+const inputClass =
+  'w-full rounded-xl border border-white/15 bg-[#12211d] px-4 py-3.5 text-sm text-white placeholder-gray-500 transition-colors focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30';
+const labelClass = 'mb-2 block text-sm font-medium text-white';
+
+// Guests land back on this section after logging in.
+const GATE_STATE = {
+  from: { pathname: '/', search: '', hash: '#contact' },
+  reason: 'Log in or create an account to send a message to the YasTalk team.',
+};
 
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+  const [form, setForm] = useState({ subject: '', message: '' });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    const formData = new FormData(e.target);
-    // Replace YOUR_ACCESS_KEY_HERE with your free key from web3forms.com
-    formData.append("access_key", "YOUR_ACCESS_KEY_HERE"); 
-
+    setError('');
+    setSending(true);
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData
+      await submitContactMessage({
+        subject: form.subject.trim(),
+        message: form.message.trim(),
       });
-      const data = await response.json();
-      if (data.success) {
-        setSubmitted(true);
-        setLoading(false);
-      } else {
-        alert("Something went wrong. Please try again.");
-        setLoading(false);
-      }
-    } catch (error) {
-      alert("Error sending message.");
-      setLoading(false);
+      setSent(true);
+      setForm({ subject: '', message: '' });
+    } catch (err) {
+      const { message, fields } = parseApiError(err);
+      setError(fields.message || fields.subject || message);
+    } finally {
+      setSending(false);
     }
   };
 
   return (
-    <section id="contact" className="py-24 px-6 max-w-7xl mx-auto">
-      <div className="bg-[#0b1714] border border-white/10 rounded-3xl p-8 sm:p-16 shadow-2xl grid lg:grid-cols-12 gap-12 items-center relative overflow-hidden">
-        
-        {/* Background glow accent */}
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        {/* Left Column: Heading & Value Add info */}
-        <div className="lg:col-span-5 space-y-6 relative z-10">
-          <span className="text-xs font-bold text-gold uppercase tracking-widest bg-gold/10 px-3.5 py-1.5 rounded-full border border-gold/20">
-            Get In Touch
-          </span>
-          
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+    <section id="contact" className="mx-auto max-w-7xl px-6 py-24">
+      <div className="grid items-center gap-12 rounded-3xl border border-white/10 bg-[#0b1714] p-8 shadow-2xl sm:p-16 lg:grid-cols-12">
+        <div className="space-y-6 lg:col-span-5">
+          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
             Questions, ideas, or want to build with us?
           </h2>
-          
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-light">
-            Whether you are a developer, potential partner, educator, or early user, we’d love to hear from you. Drop us a message and our team will get back to you shortly.
+          <p className="text-sm font-light leading-relaxed text-gray-300 sm:text-base">
+            Whether you are a developer, partner, educator or early user, we would love to hear
+            from you. Send us a message and the team will get back to you.
           </p>
-
-          <div className="space-y-4 pt-4 border-t border-white/10 text-sm text-gray-300">
-            <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gold border border-white/10 font-bold">✉</span>
-              <span>Yastalk@gmail.com</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gold border border-white/10 font-bold">🌍</span>
-              <span>Connecting Global Communities</span>
-            </div>
-          </div>
+          <p className="border-t border-white/10 pt-6 text-sm text-gray-300">
+            Prefer email? Write to{' '}
+            <a
+              href="mailto:Yastalk@gmail.com"
+              className="font-medium text-gold underline underline-offset-4"
+            >
+              Yastalk@gmail.com
+            </a>
+          </p>
         </div>
 
-        {/* Right Column: Styled Form or Success State */}
-        <div className="lg:col-span-7 bg-white/5 backdrop-blur-md border border-white/10 p-6 sm:p-8 rounded-2xl relative z-10 shadow-xl">
-          {submitted ? (
-            <div className="text-center py-12 space-y-4">
-              <div className="w-16 h-16 bg-gold/20 border border-gold/40 text-gold rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
-              <h3 className="font-display text-2xl font-bold text-white">Message Sent Successfully!</h3>
-              <p className="text-gray-300 text-sm max-w-md mx-auto">
-                Thank you for reaching out. Your message has been forwarded directly to <span className="text-gold font-medium">Yastalk@gmail.com</span>. We will respond soon!
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-md sm:p-8 lg:col-span-7">
+          {!isAuthenticated ? (
+            <div className="space-y-5 py-4">
+              <h3 className="font-display text-2xl font-semibold text-white">
+                Log in to send a message
+              </h3>
+              <p className="max-w-md text-sm leading-relaxed text-gray-300">
+                An account lets us reply to you and keeps your messages and payments in one
+                place. Browsing the site never needs one.
               </p>
-              <button 
-                onClick={() => setSubmitted(false)}
-                className="mt-4 text-xs font-semibold uppercase tracking-wider text-gold hover:underline"
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  to="/login"
+                  state={GATE_STATE}
+                  className="rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-[#d49622]"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/signup"
+                  state={GATE_STATE}
+                  className="rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-gold hover:text-gold"
+                >
+                  Create account
+                </Link>
+              </div>
+            </div>
+          ) : sent ? (
+            <div className="space-y-4 py-10 text-center">
+              <h3 className="font-display text-2xl font-bold text-white">Message sent</h3>
+              <p className="mx-auto max-w-md text-sm text-gray-300">
+                Thank you. We have your message and will reply to{' '}
+                <span className="font-medium text-gold">{user.email}</span>.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSent(false)}
+                className="mt-2 text-sm font-semibold text-gold underline underline-offset-4"
               >
                 Send another message
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
+              <p className="text-sm text-gray-300">
+                Sending as{' '}
+                <span className="font-medium text-white">
+                  {[user.first_name, user.last_name].filter(Boolean).join(' ') || user.email}
+                </span>{' '}
+                ({user.email})
+              </p>
+
+              {error && (
+                <p
+                  role="alert"
+                  className="rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+                >
+                  {error}
+                </p>
+              )}
+
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gold mb-2">
-                  Your name
+                <label htmlFor="contact-subject" className={labelClass}>
+                  Subject (optional)
                 </label>
-                <input 
-                  type="text" 
-                  name="name"
-                  required
-                  placeholder="e.g. Sarah Jenkins"
-                  className="w-full bg-[#12211d] border border-white/15 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold transition-colors"
+                <input
+                  id="contact-subject"
+                  name="subject"
+                  type="text"
+                  maxLength={150}
+                  value={form.subject}
+                  onChange={handleChange}
+                  placeholder="What is this about?"
+                  className={inputClass}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gold mb-2">
-                  Your email
-                </label>
-                <input 
-                  type="email" 
-                  name="email"
-                  required
-                  placeholder="sarah@example.com"
-                  className="w-full bg-[#12211d] border border-white/15 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gold mb-2">
+                <label htmlFor="contact-message" className={labelClass}>
                   Your message
                 </label>
-                <textarea 
+                <textarea
+                  id="contact-message"
                   name="message"
                   required
-                  rows="4" 
-                  placeholder="Tell us what's on your mind or how you'd like to collaborate..."
-                  className="w-full bg-[#12211d] border border-white/15 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-gold transition-colors resize-none"
-                ></textarea>
+                  rows="5"
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="Tell us what is on your mind or how you would like to work together."
+                  className={`${inputClass} resize-none`}
+                />
               </div>
 
-              <button 
-                type="submit" 
-                disabled={loading}
-                className="w-full bg-gold hover:bg-[#d49622] text-[#12211d] font-bold py-4 rounded-xl transition-all shadow-lg shadow-gold/20 hover:scale-[1.01] text-sm uppercase tracking-wider disabled:opacity-50"
+              <button
+                type="submit"
+                disabled={sending}
+                className="w-full rounded-full bg-gold py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-[#d49622] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? "Sending..." : "Send message"}
+                {sending ? 'Sending...' : 'Send message'}
               </button>
             </form>
           )}
         </div>
-
       </div>
     </section>
   );
