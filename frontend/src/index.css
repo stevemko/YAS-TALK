@@ -10,6 +10,12 @@
   --color-teal: #1f6f64;       /* Secondary accent */
   --color-rust: #b3472b;       /* Sparing emphasis / alerts */
   
+  --color-night: #0b1714;      /* Deepest background: hero and footer */
+  /* Logo hues, used sparingly so the mark stays the brightest thing on the page */
+  --color-leaf: #159a5c;
+  --color-lagoon: #27b1b4;
+  --color-sky: #2f9be0;
+
   --color-brand-green: #047857;/* Rich poster forest green */
   --color-brand-navy: #0f172a; /* Deep poster navy blue */
 
@@ -92,3 +98,53 @@ body {
 .text-poster-navy {
   color: var(--color-brand-navy);
 }
+
+/* ---------- Relay ticker: show the first phrase still when motion is reduced ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .relay-word:first-child { opacity: 1 !important; animation: none !important; }
+}
+
+/* ---------- Brand gradient text (the logo's colours), used once in the hero ---------- */
+.text-logo-gradient {
+  background: linear-gradient(100deg, #3ad08a 0%, #27b1b4 42%, #f2b632 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Greeting marquee ---------- */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee-scroll 46s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+/* ---------- Gentle float for the hero chips ---------- */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.float-y { animation: float-y 6s ease-in-out infinite; }
+
+/* ---------- Light that comes from the logo's colours, behind the hero phone ---------- */
+.hero-glow {
+  background:
+    radial-gradient(55% 55% at 72% 38%, rgba(39, 177, 180, 0.30), transparent 70%),
+    radial-gradient(40% 40% at 88% 72%, rgba(242, 182, 50, 0.20), transparent 70%),
+    radial-gradient(45% 45% at 58% 18%, rgba(21, 154, 92, 0.26), transparent 70%);
+}
+
+/* Hide the scrollbar on the touch carousels but keep them scrollable */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Never let a stray element make the page scroll sideways. `clip` keeps position: sticky working. */
+body { overflow-x: clip; }
+
+/* The Donate pill in the top bar: hidden on phones (the floating Donate button covers them),
+   shown on tablets, hidden in the one tight band just above the hamburger breakpoint, then shown again. */
+.nav-donate { display: none; }
+@media (min-width: 640px) { .nav-donate { display: inline-flex; } }
+@media (min-width: 1024px) and (max-width: 1179px) { .nav-donate { display: none; } }
+@media (min-width: 1180px) { .nav-donate { display: inline-flex; } }

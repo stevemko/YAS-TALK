@@ -70,42 +70,42 @@ export default function Team() {
   const [selectedMember, setSelectedMember] = useState(null);
 
   return (
-    <section id="about" className="py-20 px-6 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-          Meet the Minds Behind <span className="text-gold">YasTalk</span>
+    <section id="about" className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+      <div className="max-w-2xl">
+        <h2 className="font-display text-3xl font-semibold leading-tight text-balance text-ink sm:text-4xl lg:text-5xl">
+          Meet the minds behind YasTalk
         </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="mt-4 text-lg leading-relaxed text-ink/70">
           A passionate leadership and development team dedicated to making cross-lingual conversations natural, fast, and accessible worldwide.
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="mt-12 flex flex-wrap justify-center gap-6">
         {teamMembers.map((member, index) => (
           <div 
             key={index} 
-            className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 flex flex-col items-center text-center transition-transform hover:-translate-y-1 duration-300"
+            className="flex w-full flex-col items-center rounded-3xl border sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)] border-ink/10 bg-white p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-gold/60 hover:shadow-lg hover:shadow-ink/5"
           >
             {/* Profile Image */}
             <div className="relative w-28 h-28 mb-5">
               <img 
                 src={member.image} 
                 alt={member.name} 
-                className="w-full h-full rounded-full object-cover border-4 border-gold/30 shadow-inner"
+                className="h-full w-full rounded-full border-4 border-gold/40 object-cover"
               />
             </div>
 
             {/* Name & Role */}
-            <h3 className="font-display text-lg font-bold text-gray-900 mb-1">{member.name}</h3>
-            <p className="text-xs font-semibold text-gold mb-3 uppercase tracking-wider">{member.role}</p>
+            <h3 className="mb-1 font-display text-lg font-semibold leading-snug text-ink">{member.name}</h3>
+            <p className="mb-3 text-sm font-medium text-[#8a5d00]">{member.role}</p>
             
             {/* Short Preview Bio */}
-            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-6 flex-grow">{member.shortBio}</p>
+            <p className="mb-6 flex-grow text-sm leading-relaxed text-ink/70">{member.shortBio}</p>
 
             {/* Read Full Bio Button */}
             <button
               onClick={() => setSelectedMember(member)}
-              className="text-xs font-semibold text-gold bg-gold/10 hover:bg-gold/20 px-4 py-2 rounded-full transition-colors mt-auto"
+              className="mt-auto rounded-full bg-gold/20 px-4 py-2 text-sm font-semibold text-[#6b4700] transition-colors hover:bg-gold/40"
             >
               Read Full Biography
             </button>

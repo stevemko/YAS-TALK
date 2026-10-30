@@ -15,7 +15,7 @@ const WELCOMES = [
   },
 ];
 
-const AUTH_PATHS = ['/login', '/signup', '/forgot-password', '/reset-password'];
+const AUTH_PATHS = ['/login', '/signup', '/forgot-password', '/reset-password', '/verify-email'];
 
 // Where to go after logging in: back to where the visitor came from.
 export function afterAuthPath(state) {

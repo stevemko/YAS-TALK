@@ -11,7 +11,7 @@ export const LANGUAGES = [
 
 const translations = {
   en: {
-    nav: { services: 'Services', languages: 'Languages', about: 'About', testimonials: 'Stories', contact: 'Contact', cta: 'Join the waitlist', app: 'The App' },
+    nav: { services: 'Services', languages: 'Languages', about: 'About', testimonials: 'Stories', contact: 'Contact', cta: 'Join the waitlist', app: 'The App', pricing: 'Pricing' },
     hero: {
       eyebrow: 'YasTalk · real-time translation',
       title: 'Say it once. Be understood everywhere.',
@@ -93,7 +93,7 @@ const translations = {
     },
   },
   fr: {
-    nav: { services: 'Services', languages: 'Langues', about: 'À propos', testimonials: 'Témoignages', contact: 'Contact', cta: "Rejoindre la liste", app: "L'application" },
+    nav: { services: 'Services', languages: 'Langues', about: 'À propos', testimonials: 'Témoignages', contact: 'Contact', cta: "Rejoindre la liste", app: "L'application", pricing: 'Tarifs' },
     hero: {
       eyebrow: 'YasTalk · traduction en temps réel',
       title: 'Dites-le une fois. Soyez compris partout.',
@@ -175,7 +175,7 @@ const translations = {
     },
   },
   ln: {
-    nav: { services: 'Misala', languages: 'Minoko', about: 'Na ntina na biso', testimonials: 'Masolo', contact: 'Kokutana', cta: 'Kokoma na liste', app: 'Application' },
+    nav: { services: 'Misala', languages: 'Minoko', about: 'Na ntina na biso', testimonials: 'Masolo', contact: 'Kokutana', cta: 'Kokoma na liste', app: 'Application', pricing: 'Motuya' },
     hero: {
       eyebrow: 'YasTalk · botongoli na ntango moko',
       title: 'Loba yango mbala moko. Bandimi yo bisika nyonso.',
@@ -257,7 +257,7 @@ const translations = {
     },
   },
   sw: {
-    nav: { services: 'Huduma', languages: 'Lugha', about: 'Kuhusu', testimonials: 'Ushuhuda', contact: 'Wasiliana', cta: 'Jiunge na orodha', app: 'Programu' },
+    nav: { services: 'Huduma', languages: 'Lugha', about: 'Kuhusu', testimonials: 'Ushuhuda', contact: 'Wasiliana', cta: 'Jiunge na orodha', app: 'Programu', pricing: 'Bei' },
     hero: {
       eyebrow: 'YasTalk · tafsiri ya papo hapo',
       title: 'Sema mara moja. Ueleweke kila mahali.',
@@ -339,7 +339,7 @@ const translations = {
     },
   },
   ar: {
-    nav: { services: 'الخدمات', languages: 'اللغات', about: 'من نحن', testimonials: 'آراء المستخدمين', contact: 'تواصل معنا', cta: 'انضم لقائمة الانتظار', app: 'التطبيق' },
+    nav: { services: 'الخدمات', languages: 'اللغات', about: 'من نحن', testimonials: 'آراء المستخدمين', contact: 'تواصل معنا', cta: 'انضم لقائمة الانتظار', app: 'التطبيق', pricing: 'الأسعار' },
     hero: {
       eyebrow: 'ياس توك · ترجمة فورية',
       title: 'قلها مرة واحدة. افهم في كل مكان.',

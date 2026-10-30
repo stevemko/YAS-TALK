@@ -207,3 +207,29 @@ export async function fetchPayments() {
   const { data } = await api.get('/payments/');
   return data;
 }
+
+// Public: the prices the server will really charge (no login needed).
+export async function fetchPlans() {
+  const { data } = await api.get('/payments/plans/', { skipAuth: true });
+  return data;
+}
+
+// ---- Donations (public: no login needed) ----
+export const fetchDonationConfig = () =>
+  api.get('/donations/config/', { skipAuth: true }).then((r) => r.data);
+export const donateMpesa = (body) =>
+  api.post('/donations/mpesa/', body, { skipAuth: true }).then((r) => r.data);
+export const fetchDonationStatus = (id) =>
+  api.get(`/donations/${id}/status/`, { skipAuth: true }).then((r) => r.data);
+export const donateCard = (body) =>
+  api.post('/donations/card/', body, { skipAuth: true }).then((r) => r.data);
+export const verifyCardDonation = (reference) =>
+  api.get('/donations/card/verify/', { params: { reference }, skipAuth: true }).then((r) => r.data);
+export const donateCrypto = (body) =>
+  api.post('/donations/crypto/', body, { skipAuth: true }).then((r) => r.data);
+
+// ---- Events (public) ----
+export const fetchEvents = (when = 'upcoming') =>
+  api.get('/events/', { params: { when }, skipAuth: true }).then((r) => r.data);
+export const fetchEvent = (slug) =>
+  api.get(`/events/${slug}/`, { skipAuth: true }).then((r) => r.data);

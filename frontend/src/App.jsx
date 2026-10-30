@@ -13,6 +13,7 @@ import {
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import FloatingActions from './components/FloatingActions';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import HomePage from './pages/HomePage';
@@ -21,6 +22,16 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
+import Account from './pages/Account';
+import Pricing from './pages/Pricing';
+import Checkout from './pages/Checkout';
+import Donate from './pages/Donate';
+import DonateThanks from './pages/DonateThanks';
+import Events from './pages/Events';
+import EventDetail from './pages/EventDetail';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
 function ScrollToHash() {
   const { pathname, hash } = useLocation();
@@ -100,9 +111,36 @@ function SiteContent() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/donate" element={<Donate />} />
+          <Route path="/donate/thanks" element={<DonateThanks />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:slug" element={<EventDetail />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route
+            path="/checkout/:plan"
+            element={
+              <ProtectedRoute reason="Log in or create an account to subscribe.">
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute reason="Log in to manage your account.">
+                <Account />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
 
+      <FloatingActions />
       <Footer />
     </div>
   );

@@ -1,129 +1,115 @@
-// src/components/Services.jsx
+import { Camera, FileText, GraduationCap, Mic, MessagesSquare, Plane, Presentation, Store, Type, WifiOff } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 import yasPosterImg from '../images/yas-poster.jpg';
 import voiceDemoImg from '../images/voice-demo.jpg';
+import Reveal from './Reveal';
+import SectionHeading from './SectionHeading';
+
+const ICONS = { mic: Mic, text: Type, camera: Camera, offline: WifiOff, chat: MessagesSquare, document: FileText };
+
+const AUDIENCES = [
+  { Icon: GraduationCap, title: 'Students and researchers', body: 'Reach global learning resources, work with international peers and study across language divides.' },
+  { Icon: Store, title: 'Traders and entrepreneurs', body: 'Negotiate, chat with suppliers and close sales across borders with instant text and voice translation.' },
+  { Icon: Presentation, title: 'Lecturers and educators', body: 'Teach in several languages and keep a diverse classroom connected.' },
+  { Icon: Plane, title: 'Travellers and daily life', body: 'Find your way, speak naturally with locals and handle everyday errands with a pocket interpreter.' },
+];
 
 export default function Services({ services }) {
+  const { t } = useLanguage();
+  const list = services || [];
+
   return (
-    <section id="services" className="py-20 px-6 max-w-7xl mx-auto">
-      {/* Original Services Grid */}
-      {services && services.length > 0 && (
-        <div className="mb-20">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Our Core <span className="text-gold">Services</span>
-            </h2>
-            <p className="text-gray-600">
-              Powerful tools designed to break down language barriers instantly.
+    <section id="services" className="bg-paper px-5 py-20 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-6xl">
+        <SectionHeading title={t.services.title} subtitle={t.services.subtitle} />
+
+        {/* The services: the first one leads, the rest sit around it */}
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:grid-flow-dense">
+          {list.map((service, i) => {
+            const Icon = ICONS[service.icon] || Type;
+            const lead = i === 0;
+            // Widths 2-1-1-2-1-2 fill every row of a 3-column grid when there are six services.
+            const wide = [0, 3, 5].includes(i % 6);
+            return (
+              <Reveal
+                key={service.id ?? service.title}
+                delay={(i % 3) * 0.08}
+                className={`group rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 ${
+                  lead
+                    ? 'bg-night text-paper lg:col-span-2 lg:p-9'
+                    : `border border-ink/10 bg-white hover:border-gold/60 hover:shadow-lg hover:shadow-ink/5 ${
+                        wide ? 'lg:col-span-2' : ''
+                      }`
+                }`}
+              >
+                <span
+                  className={`grid h-12 w-12 place-items-center rounded-2xl ${
+                    lead ? 'bg-gold text-ink' : 'bg-gold/20 text-[#8a5d00] group-hover:bg-gold group-hover:text-ink'
+                  } transition-colors`}
+                >
+                  <Icon size={22} aria-hidden="true" />
+                </span>
+                <h3 className={`mt-6 font-display font-semibold ${lead ? 'text-3xl' : 'text-2xl'}`}>{service.title}</h3>
+                <p className={`mt-3 leading-relaxed ${lead ? 'max-w-xl text-lg text-paper/75' : 'text-ink/70'}`}>
+                  {service.description}
+                </p>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        {/* Who it is for */}
+        <Reveal className="mt-24 grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+          <div className="relative mx-auto w-full max-w-md">
+            <div aria-hidden="true" className="absolute -inset-3 -rotate-2 rounded-[2rem] bg-gold/30" />
+            <img
+              src={yasPosterImg}
+              alt="YasTalk overview poster"
+              className="relative w-full rounded-[1.6rem] border-4 border-white object-cover shadow-xl"
+            />
+          </div>
+          <div>
+            <h3 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Built for every day, every profession</h3>
+            <p className="mt-4 text-lg text-ink/70">
+              Language barriers should not limit opportunity. YasTalk makes cross-border conversation effortless for everyone.
             </p>
+            <ul className="mt-8 space-y-6">
+              {AUDIENCES.map(({ Icon, title, body }) => (
+                <li key={title} className="flex gap-4">
+                  <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-teal/10 text-teal">
+                    <Icon size={20} aria-hidden="true" />
+                  </span>
+                  <div>
+                    <p className="font-semibold text-ink">{title}</p>
+                    <p className="mt-1 text-ink/70">{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
+        </Reveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="font-bold text-lg text-gray-900 mb-2">{service.title}</h3>
-                <p className="text-gray-600 text-sm">{service.description}</p>
-              </div>
-            ))}
+        {/* Voice */}
+        <Reveal className="mt-20 grid items-center gap-10 rounded-[2rem] bg-paper-soft p-7 sm:p-12 lg:grid-cols-2 lg:gap-14">
+          <div className="order-2 lg:order-1">
+            <h3 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Speak naturally. We translate instantly.</h3>
+            <p className="mt-4 text-lg leading-relaxed text-ink/70">
+              Never let translation lag slow you down. Whether you are on a call or talking face to face, YasTalk listens and speaks the translation out in real time.
+            </p>
+            <ul className="mt-6 space-y-3 text-ink/85">
+              {['Real-time voice-to-voice translation', 'Live call translation support', 'Instant text message translation'].map((item) => (
+                <li key={item} className="flex items-center gap-3">
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-gold" /> {item}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      )}
-
-      {/* Main Feature Showcase Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-          One App. Unlimited <span className="text-gold">Conversations</span>.
-        </h2>
-        <p className="text-gray-600 text-base sm:text-lg">
-          Yas Talk bridges global gaps seamlessly—transforming text, voice, and live calls across English, French, Swahili, Lingala, and Arabic.
-        </p>
-      </div>
-
-      {/* Feature 1: The Main Poster & Core Utility Breakdown */}
-      <div className="grid lg:grid-cols-2 gap-12 items-center mb-20 bg-gray-50 p-8 sm:p-12 rounded-3xl border border-gray-100">
-        <div className="flex justify-center">
-          <img 
-            src={yasPosterImg} 
-            alt="Yas Talk Overview Poster" 
-            className="rounded-2xl shadow-xl max-h-[550px] object-cover w-full border-4 border-white"
+          <img
+            src={voiceDemoImg}
+            alt="YasTalk voice translation"
+            className="order-1 w-full rounded-3xl border-4 border-white object-cover shadow-lg lg:order-2"
           />
-        </div>
-        <div className="space-y-6">
-          <span className="text-xs font-bold text-gold uppercase tracking-wider bg-gold/10 px-3 py-1.5 rounded-full">
-            Multilingual Ecosystem
-          </span>
-          <h3 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">
-            Built for Every Day, Every Profession
-          </h3>
-          <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-            Language barriers shouldn't limit opportunity. Yas Talk is precision-engineered to make complex cross-border communication effortless for everyone:
-          </p>
-
-          <div className="space-y-4 text-sm sm:text-base text-gray-700">
-            <div className="flex items-start gap-3">
-              <span className="text-gold font-bold text-lg">✓</span>
-              <div>
-                <strong className="text-gray-900">For Students & Researchers:</strong> Access global educational resources, collaborate seamlessly with international peers, and study across language divides without missing a beat.
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="text-gold font-bold text-lg">✓</span>
-              <div>
-                <strong className="text-gray-900">For Traders & Entrepreneurs:</strong> Expand your market footprint. Negotiate deals, chat with suppliers, and close sales across borders with instant text and voice translation.
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="text-gold font-bold text-lg">✓</span>
-              <div>
-                <strong className="text-gray-900">For Lecturers & Educators:</strong> Deliver multi-lingual lectures, engage diverse student bodies, and foster an inclusive, globally connected classroom environment.
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <span className="text-gold font-bold text-lg">✓</span>
-              <div>
-                <strong className="text-gray-900">For Travelers & Daily Life:</strong> Navigate foreign cities, speak naturally with locals, and handle everyday transactions instantly using our pocket interpreter.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Feature 2: Real-time Voice & Call Capabilities */}
-      <div className="grid lg:grid-cols-2 gap-12 items-center bg-white p-8 sm:p-12 rounded-3xl border border-gray-100 shadow-sm">
-        <div className="space-y-6 order-2 lg:order-1">
-          <span className="text-xs font-bold text-gold uppercase tracking-wider bg-gold/10 px-3 py-1.5 rounded-full">
-            Voice & Call Engine
-          </span>
-          <h3 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">
-            Speak Naturally, We Translate Instantly
-          </h3>
-          <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-            Never let translation lag slow down your flow. Whether you're making voice calls or chatting face-to-face, Yas Talk listens to your natural voice input and speaks out the translated language in real time.
-          </p>
-          <ul className="space-y-3 text-sm sm:text-base text-gray-700">
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-gold"></span>
-              Real-time voice-to-voice translation
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-gold"></span>
-              Live call translation support
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-gold"></span>
-              Instant messaging text translation
-            </li>
-          </ul>
-        </div>
-        <div className="flex justify-center order-1 lg:order-2">
-          <img 
-            src={voiceDemoImg} 
-            alt="Yas Talk Voice Translation Illustration" 
-            className="rounded-2xl shadow-md max-h-[400px] object-cover w-full border-4 border-gray-50"
-          />
-        </div>
+        </Reveal>
       </div>
     </section>
   );
